@@ -26,7 +26,6 @@ document.addEventListener("DOMContentLoaded", function() {
   });
 
   function createBoard() {
-
     popup.style.display = "none";
     for (let i = 0; i < 100; i++) {
       let div = document.createElement("div");
@@ -40,6 +39,7 @@ document.addEventListener("DOMContentLoaded", function() {
     randomApple(squares);
     //random apple
     direction = 1;
+    score = 0;
     scoreDisplay.innerHTML = score;
     intervalTime = 1000;
     currentSnake = [2, 1, 0];
@@ -105,8 +105,6 @@ document.addEventListener("DOMContentLoaded", function() {
   
   function control(event)
   {
-    console.log("Entered control" + event.key)
-
     switch (event.key) {
       case "ArrowDown":
         direction = +width; // down the snake head will instantly appear 10 divs below from the current div
@@ -129,8 +127,10 @@ document.addEventListener("DOMContentLoaded", function() {
   bottom.addEventListener("click", () => (direction = +width));
   left.addEventListener("click", () => (direction = -1));
   right.addEventListener("click", () => (direction = 1));
+
   
   function replay() {
+    console.log("Replay")
     grid.innerHTML = "";
     createBoard();
     startGame();
