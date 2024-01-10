@@ -9,10 +9,10 @@ let left = document.querySelector(".left");
 let bottom = document.querySelector(".bottom");
 let right = document.querySelector(".right");
 let up = document.querySelector(".top");
-let width = 10;
+let boardWidth = 10;
 let currentIndex = 0;
 let appleIndex = 0;
-let currentSnake = [2, 1, 0];
+let currentSnake = [2, 1, 0]; //The snake with positions labelled from 1 to 100
 let direction = 1;
 let score = 0;
 let topScore = 0;
@@ -80,10 +80,15 @@ document.addEventListener("DOMContentLoaded", function() {
   //Checks whether the snake has hit an obstacle
   function checkForHits(squares) {
     if (
-      (currentSnake[0] + width >= width * width && direction === width) ||
-      (currentSnake[0] % width === width - 1 && direction === 1) ||
-      (currentSnake[0] % width === 0 && direction === -1) ||
-      (currentSnake[0] - width <= 0 && direction === -width) ||
+      //The snake hits the bottom wall
+      (currentSnake[0] + boardWidth >= boardWidth * boardWidth && direction === boardWidth) ||
+      //The snake hits the right wall
+      (currentSnake[0] % boardWidth === boardWidth - 1 && direction === 1) ||
+      //The snake hits the left wall
+      (currentSnake[0] % boardWidth === 0 && direction === -1) ||
+      //The snake hits the top wall
+      (currentSnake[0] - boardWidth+1 <= 0 && direction === -boardWidth) ||
+      //The snake Hits itself
       squares[currentSnake[0] + direction].classList.contains("snake")
     ) {
       return true;
@@ -120,10 +125,10 @@ document.addEventListener("DOMContentLoaded", function() {
   {
     switch (event.key) {
       case "ArrowDown":
-        direction = +width; // down the snake head will instantly appear 10 divs below from the current div
+        direction = +boardWidth; // down the snake head will instantly appear 10 divs below from the current div
         break;
       case "ArrowUp":
-        direction = -width; //if we press the up arrow, the snake will go ten divs up
+        direction = -boardWidth; //if we press the up arrow, the snake will go ten divs up
         break;
       case "ArrowRight":
         direction = 1; // right 
@@ -136,8 +141,8 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   }
 
-  up.addEventListener("click", () => (direction = -width));
-  bottom.addEventListener("click", () => (direction = +width));
+  up.addEventListener("click", () => (direction = -boardWidth));
+  bottom.addEventListener("click", () => (direction = +boardWidth));
   left.addEventListener("click", () => (direction = -1));
   right.addEventListener("click", () => (direction = 1));
 
