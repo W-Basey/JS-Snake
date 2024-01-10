@@ -4,6 +4,7 @@ let grid = document.querySelector(".grid");
 let popup = document.querySelector(".popup");
 let playAgain = document.querySelector(".playAgain");
 let scoreDisplay = document.querySelector(".scoreDisplay");
+let topScoreDisplay = document.querySelector(".topScoreDisplay");
 let left = document.querySelector(".left");
 let bottom = document.querySelector(".bottom");
 let right = document.querySelector(".right");
@@ -17,6 +18,7 @@ let score = 0;
 let speed = 0.8;
 let intervalTime = 0;
 let interval = 0;
+let topScore = 0;
 
 document.addEventListener("DOMContentLoaded", function() {
     document.addEventListener("keyup", control);
@@ -52,6 +54,8 @@ document.addEventListener("DOMContentLoaded", function() {
     let squares = document.querySelectorAll(".grid div");
     if (checkForHits(squares)) {
       alert("you hit something");
+      topScore = score > topScore ? score : topScore;
+      topScoreDisplay.textContent = topScore;
       popup.style.display = "flex";
       return clearInterval(interval);
     } else {
