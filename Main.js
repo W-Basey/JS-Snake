@@ -15,11 +15,12 @@ let appleIndex = 0;
 let currentSnake = [2, 1, 0];
 let direction = 1;
 let score = 0;
+let topScore = 0;
 let speed = 0.8;
 let intervalTime = 0;
 let interval = 0;
-let topScore = 0;
 
+//Waits for the HTML doc to be completely parsed before running the game
 document.addEventListener("DOMContentLoaded", function() {
     document.addEventListener("keyup", control);
     createBoard();
@@ -27,6 +28,7 @@ document.addEventListener("DOMContentLoaded", function() {
     playAgain.addEventListener("click", replay);
   });
 
+  //Creates the 10*10 grid that snake will be played on
   function createBoard() {
     popup.style.display = "none";
     for (let i = 0; i < 100; i++) {
@@ -35,6 +37,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   }
   
+  //Starts the game
   function startGame() {
     console.log("Started")
     let squares = document.querySelectorAll(".grid div");
@@ -42,7 +45,7 @@ document.addEventListener("DOMContentLoaded", function() {
     //random apple
     direction = 1;
     score = 0;
-    scoreDisplay.innerHTML = score;
+    scoreDisplay.innerHTML = getScore();
     intervalTime = 1000;
     currentSnake = [2, 1, 0];
     currentIndex = 0;
@@ -50,12 +53,13 @@ document.addEventListener("DOMContentLoaded", function() {
     interval = setInterval(moveOutcome, intervalTime);
   }
   
+  //Computes the snakes movement result
   function moveOutcome() {
     let squares = document.querySelectorAll(".grid div");
     if (checkForHits(squares)) {
       alert("you hit something");
       topScore = score > topScore ? score : topScore;
-      topScoreDisplay.textContent = topScore;
+      topScoreDisplay.textContent = getTopScore();
       popup.style.display = "flex";
       return clearInterval(interval);
     } else {
@@ -63,6 +67,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   }
   
+  //Moves the snake at increasingly short intervals in the specified direction
   function moveSnake(squares) {
     let tail = currentSnake.pop();
     squares[tail].classList.remove("snake");
@@ -72,6 +77,7 @@ document.addEventListener("DOMContentLoaded", function() {
     squares[currentSnake[0]].classList.add("snake");
   }
   
+  //Checks whether the snake has hit an obstacle
   function checkForHits(squares) {
     if (
       (currentSnake[0] + width >= width * width && direction === width) ||
@@ -86,6 +92,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   }
   
+  //Checks whether the snake has hit an apple
   function eatApple(squares, tail) {
     if (squares[currentSnake[0]].classList.contains("apple")) {
       squares[currentSnake[0]].classList.remove("apple");
@@ -93,13 +100,14 @@ document.addEventListener("DOMContentLoaded", function() {
       currentSnake.push(tail);
       randomApple(squares);
       score++;
-      scoreDisplay.textContent = score;
+      scoreDisplay.textContent = getScore();
       clearInterval(interval);
       intervalTime = intervalTime * speed;
       interval = setInterval(moveOutcome, intervalTime);
     }
   }
   
+  //Creates a new apple
   function randomApple(squares) {
     do {
       appleIndex = Math.floor(Math.random() * squares.length);
@@ -107,6 +115,7 @@ document.addEventListener("DOMContentLoaded", function() {
     squares[appleIndex].classList.add("apple");
   }
   
+  //Computes user input inot snake movement direction
   function control(event)
   {
     switch (event.key) {
@@ -133,6 +142,15 @@ document.addEventListener("DOMContentLoaded", function() {
   right.addEventListener("click", () => (direction = 1));
 
   
+  //Template for the Score visuals
+  function getScore(){
+    return `Score: ${score}`;
+  }
+  function getTopScore(){
+    return `Top Score: ${topScore}`;
+  }
+
+  //Allows the player to replay the game
   function replay() {
     console.log("Replay")
     grid.innerHTML = "";
