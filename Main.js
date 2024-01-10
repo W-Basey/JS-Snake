@@ -12,6 +12,8 @@ let up = document.querySelector(".top");
 let boardWidth = 10;
 let currentIndex = 0;
 let appleIndex = 0;
+let bombIndex = 0;
+let forbiddenBomb = [1,8,10,19,80,91,89,98];
 let currentSnake = [2, 1, 0]; //The snake with positions labelled from 1 to 100
 let direction = 1;
 let score = 0;
@@ -89,7 +91,10 @@ document.addEventListener("DOMContentLoaded", function() {
       //The snake hits the top wall
       (currentSnake[0] - boardWidth+1 <= 0 && direction === -boardWidth) ||
       //The snake Hits itself
-      squares[currentSnake[0] + direction].classList.contains("snake")
+      (squares[currentSnake[0] + direction].classList.contains("snake")) ||
+      //Snake hits bomb
+      (squares[currentSnake[0] + direction].classList.contains("bomb"))
+
     ) {
       return true;
     } else {
@@ -104,6 +109,8 @@ document.addEventListener("DOMContentLoaded", function() {
       squares[tail].classList.add("snake");
       currentSnake.push(tail);
       randomApple(squares);
+      randomBomb(squares);
+      console.log("Passed");
       score++;
       scoreDisplay.textContent = getScore();
       clearInterval(interval);
@@ -116,8 +123,23 @@ document.addEventListener("DOMContentLoaded", function() {
   function randomApple(squares) {
     do {
       appleIndex = Math.floor(Math.random() * squares.length);
-    } while (squares[appleIndex].classList.contains("snake"));
+    } while (squares[appleIndex].classList.contains("snake") || 
+             squares[appleIndex].classList.contains("bomb"));
+
     squares[appleIndex].classList.add("apple");
+  }
+
+  //Create a bomb
+  function randomBomb(squares) {
+    do {
+      bombIndex = Math.floor(Math.random() * squares.length);
+      //Ensure that the blovk does not appear within the snake or in the forbidden sections
+    } while (squares[bombIndex].classList.contains("snake") || 
+             squares[bombIndex].classList.contains("apple") ||
+             forbiddenBomb.includes(bombIndex))
+
+
+    squares[bombIndex].classList.add("bomb");
   }
   
   //Computes user input inot snake movement direction

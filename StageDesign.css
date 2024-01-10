@@ -23,7 +23,12 @@ body {
   }
   
   .apple {
-    background: yellow;
+    background: red;
+    border-radius: 20px;
+  }
+
+  .bomb {
+    background: black;
     border-radius: 20px;
   }
   
