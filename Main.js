@@ -1,4 +1,6 @@
 //Snake go Here
+//Original code project is built from found here:
+//https://www.freecodecamp.org/news/how-to-build-a-snake-game-in-javascript/
 
 let grid = document.querySelector(".grid");
 let popup = document.querySelector(".popup");
@@ -59,16 +61,21 @@ document.addEventListener("DOMContentLoaded", function() {
   function moveOutcome() {
     let squares = document.querySelectorAll(".grid div");
     if (checkForHits(squares)) {
-      alert("you hit something");
-      topScore = score > topScore ? score : topScore;
-      topScoreDisplay.textContent = getTopScore();
-      popup.style.display = "flex";
-      return clearInterval(interval);
+      gameover();
     } else {
+      checkForPowerUp(squares);
       moveSnake(squares);
     }
   }
   
+  function gameover() {
+    alert("you hit something");
+    topScore = score > topScore ? score : topScore;
+    topScoreDisplay.textContent = getTopScore();
+    popup.style.display = "flex";
+    clearInterval(interval);
+  }
+
   //Moves the snake at increasingly short intervals in the specified direction
   function moveSnake(squares) {
     let tail = currentSnake.pop();
@@ -91,15 +98,31 @@ document.addEventListener("DOMContentLoaded", function() {
       //The snake hits the top wall
       (currentSnake[0] - boardWidth+1 <= 0 && direction === -boardWidth) ||
       //The snake Hits itself
-      (squares[currentSnake[0] + direction].classList.contains("snake")) ||
-      //Snake hits bomb
-      (squares[currentSnake[0] + direction].classList.contains("bomb"))
-
+      (squares[currentSnake[0] + direction].classList.contains("snake"))
     ) {
       return true;
     } else {
       return false;
     }
+  }
+
+  function checkForPowerUp(squares) {
+    if (    
+      //Snake hits bomb
+      squares[currentSnake[0] + direction].classList.contains("bomb")
+      ) {
+        let tail = currentSnake.pop();
+        if (score >= 1)
+        {
+          console.log(score);
+          squares[tail].classList.remove("snake");
+          score--;
+          scoreDisplay.textContent = getScore();
+        } else {
+          console.log("score: "+score);
+          gameover();
+        }
+      }
   }
   
   //Checks whether the snake has hit an apple
@@ -110,7 +133,6 @@ document.addEventListener("DOMContentLoaded", function() {
       currentSnake.push(tail);
       randomApple(squares);
       randomBomb(squares);
-      console.log("Passed");
       score++;
       scoreDisplay.textContent = getScore();
       clearInterval(interval);
@@ -133,7 +155,7 @@ document.addEventListener("DOMContentLoaded", function() {
   function randomBomb(squares) {
     do {
       bombIndex = Math.floor(Math.random() * squares.length);
-      //Ensure that the blovk does not appear within the snake or in the forbidden sections
+      //Ensure that the block does not appear within the snake or in the forbidden sections
     } while (squares[bombIndex].classList.contains("snake") || 
              squares[bombIndex].classList.contains("apple") ||
              forbiddenBomb.includes(bombIndex))
