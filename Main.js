@@ -63,7 +63,6 @@ document.addEventListener("DOMContentLoaded", function() {
     if (checkForHits(squares)) {
       gameover();
     } else {
-      checkForPowerUp(squares);
       moveSnake(squares);
     }
   }
@@ -83,6 +82,7 @@ document.addEventListener("DOMContentLoaded", function() {
     currentSnake.unshift(currentSnake[0] + direction);
     // movement ends here
     eatApple(squares, tail);
+    checkForPowerUp(squares);
     squares[currentSnake[0]].classList.add("snake");
   }
   
@@ -107,21 +107,23 @@ document.addEventListener("DOMContentLoaded", function() {
   }
 
   function checkForPowerUp(squares) {
-    if (    
-      //Snake hits bomb
-      squares[currentSnake[0] + direction].classList.contains("bomb")
+    if (squares[currentSnake[0]].classList.contains("bomb")
       ) {
+        console.log("Hit bomb")
         let tail = currentSnake.pop();
+        squares[currentSnake[0]].classList.remove("bomb");
         if (score >= 1)
         {
-          console.log(score);
           squares[tail].classList.remove("snake");
           score--;
           scoreDisplay.textContent = getScore();
         } else {
-          console.log("score: "+score);
           gameover();
         }
+      } else if (squares[currentSnake[0]].classList.contains("light")){
+        console.log("Hit light")
+        squares[currentSnake[0]].classList.remove("light");
+        for (const x of squares) {x.classList.remove("bomb");}
       }
   }
   
@@ -149,6 +151,9 @@ document.addEventListener("DOMContentLoaded", function() {
              squares[appleIndex].classList.contains("bomb"));
 
     squares[appleIndex].classList.add("apple");
+    if (Math.floor(Math.random() * 6) == 5) {
+      squares[Math.floor(Math.random() * squares.length)].classList.add("light");
+    }
   }
 
   //Create a bomb
