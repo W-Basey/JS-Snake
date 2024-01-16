@@ -45,7 +45,7 @@ document.addEventListener("DOMContentLoaded", function() {
   function startGame() {
     console.log("Started")
     let squares = document.querySelectorAll(".grid div");
-    randomApple(squares);
+    placeSafely("apple",squares);
     //random apple
     direction = 1;
     score = 0;
@@ -107,23 +107,21 @@ document.addEventListener("DOMContentLoaded", function() {
   }
 
   function checkForPowerUp(squares) {
-    if (squares[currentSnake[0]].classList.contains("bomb")
-      ) {
-        console.log("Hit bomb")
+    if (squares[currentSnake[0]].classList.contains("bomb")) {
+        console.log("Hit bomb");
         squares[currentSnake[0]].classList.remove("bomb");
-        if (score >= 1)
-        {
+        if (score >= 1) {
           score--;
           scoreDisplay.textContent = getScore();
         } else {
           gameover();
         }
-      } else if (squares[currentSnake[0]].classList.contains("light")){
-        console.log("Hit light")
+      } else if (squares[currentSnake[0]].classList.contains("light")) {
+        console.log("Hit light");
         squares[currentSnake[0]].classList.remove("light");
         for (const x of squares) {x.classList.remove("bomb");}
-      } else if (squares[currentSnake[0]].classList.contains("slow")){
-        console.log("Hit Slow")
+      } else if (squares[currentSnake[0]].classList.contains("slow")) {
+        console.log("Hit Slow");
         squares[currentSnake[0]].classList.remove("slow");
         clearInterval(interval);
         intervalTime = intervalTime / speed;
@@ -156,7 +154,7 @@ document.addEventListener("DOMContentLoaded", function() {
   }
   
   function generatePowerUp(squares) {
-    if (Math.floor(Math.random() * 3) == 0) {
+    if (Math.floor(Math.random() * 2) == 0) {
       switch (Math.floor(Math.random() * 3)) {
         case 0:
           placeSafely("light",squares);
@@ -168,7 +166,7 @@ document.addEventListener("DOMContentLoaded", function() {
           placeSafely("shrink",squares)
           break;
         default:
-          console.log("PowerUp Genration Issue");
+          console.log("PowerUp Generation Issue");
           break;
       }
     }
