@@ -16,7 +16,7 @@ let currentIndex = 0;
 let appleIndex = 0;
 let bombIndex = 0;
 let forbiddenBomb = [1,8,10,19,80,91,89,98];
-let currentSnake = [2, 1, 0]; //The snake with positions labelled from 1 to 100
+let currentSnake = [2, 1, 0]; //The snake with positions labelled from 0 to 99
 let direction = 1;
 let score = 0;
 let topScore = 0;
@@ -110,11 +110,9 @@ document.addEventListener("DOMContentLoaded", function() {
     if (squares[currentSnake[0]].classList.contains("bomb")
       ) {
         console.log("Hit bomb")
-        let tail = currentSnake.pop();
         squares[currentSnake[0]].classList.remove("bomb");
         if (score >= 1)
         {
-          squares[tail].classList.remove("snake");
           score--;
           scoreDisplay.textContent = getScore();
         } else {
@@ -124,6 +122,17 @@ document.addEventListener("DOMContentLoaded", function() {
         console.log("Hit light")
         squares[currentSnake[0]].classList.remove("light");
         for (const x of squares) {x.classList.remove("bomb");}
+      } else if (squares[currentSnake[0]].classList.contains("slow")){
+        console.log("Hit Slow")
+        squares[currentSnake[0]].classList.remove("slow");
+        clearInterval(interval);
+        intervalTime = intervalTime / speed;
+        interval = setInterval(moveOutcome, intervalTime);
+      } else if (squares[currentSnake[0]].classList.contains("shrink")) {
+        console.log("Hit Shrink")
+        squares[currentSnake[0]].classList.remove("shrink")
+        let tail = currentSnake.pop();
+        squares[tail].classList.remove("snake");
       }
   }
   
@@ -133,8 +142,11 @@ document.addEventListener("DOMContentLoaded", function() {
       squares[currentSnake[0]].classList.remove("apple");
       squares[tail].classList.add("snake");
       currentSnake.push(tail);
-      randomApple(squares);
-      randomBomb(squares);
+      for (const x of squares) {x.classList.remove("slow");}
+      for (const x of squares) {x.classList.remove("shrink");}
+      placeSafely("apple",squares);
+      placeSafely("bomb",squares);
+      generatePowerUp(squares);
       score++;
       scoreDisplay.textContent = getScore();
       clearInterval(interval);
@@ -143,30 +155,32 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   }
   
-  //Creates a new apple
-  function randomApple(squares) {
-    do {
-      appleIndex = Math.floor(Math.random() * squares.length);
-    } while (squares[appleIndex].classList.contains("snake") || 
-             squares[appleIndex].classList.contains("bomb"));
-
-    squares[appleIndex].classList.add("apple");
-    if (Math.floor(Math.random() * 6) == 5) {
-      squares[Math.floor(Math.random() * squares.length)].classList.add("light");
+  function generatePowerUp(squares) {
+    if (Math.floor(Math.random() * 3) == 0) {
+      switch (Math.floor(Math.random() * 3)) {
+        case 0:
+          placeSafely("light",squares);
+          break;
+        case 1:
+          placeSafely("slow",squares)
+          break;
+        case 2:
+          placeSafely("shrink",squares)
+          break;
+        default:
+          console.log("PowerUp Genration Issue");
+          break;
+      }
     }
   }
 
-  //Create a bomb
-  function randomBomb(squares) {
+  function placeSafely(item, squares) {
+    let tempIndex = 0;
     do {
-      bombIndex = Math.floor(Math.random() * squares.length);
-      //Ensure that the block does not appear within the snake or in the forbidden sections
-    } while (squares[bombIndex].classList.contains("snake") || 
-             squares[bombIndex].classList.contains("apple") ||
-             forbiddenBomb.includes(bombIndex))
+      tempIndex = Math.floor(Math.random() * squares.length);
+    } while (squares[tempIndex].classList.length > 0);
 
-
-    squares[bombIndex].classList.add("bomb");
+    squares[tempIndex].classList.add(item);
   }
   
   //Computes user input inot snake movement direction
