@@ -68,7 +68,7 @@ document.addEventListener("DOMContentLoaded", function() {
   }
   
   function gameover() {
-    alert("you hit something");
+    alert("GAME OVER");
     topScore = score > topScore ? score : topScore;
     topScoreDisplay.textContent = getTopScore();
     popup.style.display = "flex";
